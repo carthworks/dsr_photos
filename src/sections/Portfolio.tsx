@@ -1,0 +1,306 @@
+import { useRef, useState, useCallback } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
+import { ArrowRight, Filter } from 'lucide-react';
+import ImageLightbox from '@/components/ImageLightbox';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const categories = ['All', 'Wedding', 'Fashion', 'Portrait', 'Details'];
+
+const portfolioImages = [
+  { src: '/images/portfolio_ceremony_walk.jpg', alt: 'Wedding ceremony', category: 'Wedding' },
+  { src: '/images/slider_fashion.jpg', alt: 'Fashion editorial', category: 'Fashion' },
+  { src: '/images/portfolio_dance.jpg', alt: 'First dance', category: 'Wedding' },
+  { src: '/images/slider_portrait.jpg', alt: 'Portrait session', category: 'Portrait' },
+  { src: '/images/portfolio_vows.jpg', alt: 'Exchanging vows', category: 'Wedding' },
+  { src: '/images/details_rings_macro.jpg', alt: 'Wedding rings', category: 'Details' },
+  { src: '/images/process_couple_laughing.jpg', alt: 'Couple portrait', category: 'Portrait' },
+  { src: '/images/slider_wedding.jpg', alt: 'Traditional wedding', category: 'Wedding' },
+  { src: '/images/hero_couple_grass.jpg', alt: 'Golden hour portrait', category: 'Portrait' },
+  { src: '/images/philosophy_bride_portrait.jpg', alt: 'Bridal portrait', category: 'Wedding' },
+  { src: '/images/journal_1.jpg', alt: 'Getting ready', category: 'Details' },
+  { src: '/images/journal_2.jpg', alt: 'Venue setup', category: 'Details' },
+];
+
+export default function Portfolio() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const textCardRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
+
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const filteredImages = activeCategory === 'All'
+    ? portfolioImages
+    : portfolioImages.filter(img => img.category === activeCategory);
+
+  useGSAP(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const scrollTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: '+=130%',
+        pin: true,
+        scrub: 0.6,
+      },
+    });
+
+    // Right image card animation
+    scrollTl.fromTo(
+      imageRef.current,
+      { x: '60vw', opacity: 0, scale: 0.98 },
+      { x: 0, opacity: 1, scale: 1, ease: 'none' },
+      0
+    );
+
+    // Left text card animation
+    scrollTl.fromTo(
+      textCardRef.current,
+      { x: '-40vw', opacity: 0 },
+      { x: 0, opacity: 1, ease: 'none' },
+      0.05
+    );
+
+    // EXIT (70%-100%)
+    scrollTl.fromTo(
+      imageRef.current,
+      { x: 0, opacity: 1 },
+      { x: '18vw', opacity: 0, ease: 'power2.in' },
+      0.7
+    );
+
+    scrollTl.fromTo(
+      textCardRef.current,
+      { x: 0, opacity: 1 },
+      { x: '-18vw', opacity: 0, ease: 'power2.in' },
+      0.7
+    );
+  }, { scope: sectionRef });
+
+  // Gallery animation
+  useGSAP(() => {
+    const gallery = galleryRef.current;
+    if (!gallery) return;
+
+    const items = gallery.querySelectorAll('.gallery-item');
+    gsap.fromTo(
+      items,
+      { y: 40, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: gallery,
+          start: 'top 80%',
+        },
+      }
+    );
+  }, { scope: galleryRef, dependencies: [filteredImages] });
+
+  const openLightbox = useCallback((index: number) => {
+    setSelectedImageIndex(index);
+  }, []);
+
+  const closeLightbox = useCallback(() => {
+    setSelectedImageIndex(null);
+  }, []);
+
+
+  return (
+    <>
+      <section
+        ref={sectionRef}
+        id="portfolio"
+        className="relative w-full h-screen overflow-hidden z-40 bg-background transition-colors duration-500"
+      >
+        {/* Left Image Card */}
+        <div
+          ref={imageRef}
+          className="absolute rounded-2xl overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.10)]"
+          style={{
+            left: '6vw',
+            top: '14vh',
+            width: '54vw',
+            height: '72vh',
+          }}
+        >
+          <img
+            src="/images/process_couple_laughing.jpg"
+            alt="Couple laughing"
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Right Text Card */}
+        <div
+          ref={textCardRef}
+          className="absolute card-elegant p-10 lg:p-12"
+          style={{
+            left: '62vw',
+            top: '20vh',
+            width: '32vw',
+            minWidth: '320px',
+          }}
+        >
+          {/* Badge */}
+          <span className="inline-block px-4 py-1.5 border border-gold text-gold text-xs uppercase tracking-[0.18em] rounded-full mb-8">
+            Selected work
+          </span>
+
+          {/* Headline */}
+          <h2
+            className="font-serif font-medium text-foreground mb-6"
+            style={{ fontSize: 'clamp(26px, 2.6vw, 40px)', lineHeight: 1.1 }}
+          >
+            A gallery of visual stories.
+          </h2>
+
+          {/* Body */}
+          <p className="text-muted-foreground leading-relaxed mb-8">
+            From fashion editorials to wedding celebrations—each project is unique,
+            and the result is always crafted with care.
+          </p>
+
+          {/* CTA Link */}
+          <button
+            onClick={() => {
+              const gallery = document.getElementById('gallery-section');
+              gallery?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="group flex items-center gap-2 text-foreground font-medium hover:text-gold transition-colors"
+          >
+            <span className="link-underline">Explore the portfolio</span>
+            <ArrowRight
+              size={16}
+              className="transition-transform group-hover:translate-x-1"
+            />
+          </button>
+        </div>
+
+        {/* Right Image Card */}
+        <div
+          ref={imageRef}
+          className="absolute rounded-2xl overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.10)] cursor-pointer image-hover"
+          style={{
+            left: '42vw',
+            top: '14vh',
+            width: '52vw',
+            height: '72vh',
+          }}
+          onClick={() => openLightbox(0)}
+        >
+          <img
+            src="/images/portfolio_ceremony_walk.jpg"
+            alt="Wedding ceremony"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </section>
+
+      {/* Full Portfolio Gallery - Flowing Section */}
+      <section id="gallery-section" className="relative z-40 bg-background py-24 px-6 lg:px-12 transition-colors duration-500">
+        <div className="max-w-7xl mx-auto">
+          {/* Filter Header */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12 gap-4">
+            <h3 className="font-serif text-3xl text-foreground">Our Portfolio</h3>
+
+            {/* Category Filter */}
+            <div className="relative">
+              <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="flex items-center gap-2 px-4 py-2 bg-card rounded-full border border-border text-sm hover:border-gold transition-colors text-foreground"
+              >
+                <Filter size={16} />
+                {activeCategory}
+              </button>
+
+              {isFilterOpen && (
+                <div className="absolute top-full right-0 mt-2 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[150px] z-10 transition-colors">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        setActiveCategory(cat);
+                        setIsFilterOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 rounded-lg text-sm transition-colors ${activeCategory === cat
+                        ? 'bg-gold/10 text-gold'
+                        : 'hover:bg-muted-foreground/10 text-foreground'
+                        }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Masonry Grid */}
+          <div
+            ref={galleryRef}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+          >
+            {filteredImages.map((image, index) => (
+              <div
+                key={`${image.src}-${index}`}
+                className={`gallery-item relative rounded-2xl overflow-hidden shadow-lg cursor-pointer image-hover ${index === 0 ? 'col-span-2 row-span-2' :
+                  index === 3 ? 'col-span-2' :
+                    index === 7 ? 'row-span-2' : ''
+                  }`}
+                style={{
+                  height: index === 0 ? '500px' :
+                    index === 3 ? '250px' :
+                      index === 7 ? '500px' : '250px'
+                }}
+                onClick={() => openLightbox(portfolioImages.findIndex(img => img.src === image.src))}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <span className="text-xs uppercase tracking-[0.18em] text-gold mb-1 block">
+                      {image.category}
+                    </span>
+                    <h4 className="font-serif text-lg">{image.alt}</h4>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Image Count */}
+          <p className="text-center text-muted-foreground text-sm mt-8">
+            Showing {filteredImages.length} of {portfolioImages.length} images
+          </p>
+        </div>
+      </section>
+
+      {/* Advanced Image Lightbox */}
+      <ImageLightbox
+        images={filteredImages}
+        currentIndex={selectedImageIndex !== null ? filteredImages.findIndex(img => img.src === portfolioImages[selectedImageIndex].src) : 0}
+        isOpen={selectedImageIndex !== null}
+        onClose={closeLightbox}
+        onNavigate={(index) => {
+          const globalIndex = portfolioImages.findIndex(img => img.src === filteredImages[index].src);
+          setSelectedImageIndex(globalIndex);
+        }}
+      />
+    </>
+  );
+}
