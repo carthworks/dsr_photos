@@ -65,6 +65,7 @@ export default function Packages() {
     const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
+      // Desktop animations
       mm.add("(min-width: 1024px)", () => {
         // Heading animation
         gsap.fromTo(
@@ -77,9 +78,9 @@ export default function Packages() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: headingRef.current,
-              start: 'top 80%',
-              end: 'top 55%',
-              scrub: 1,
+              start: 'top 85%',
+              end: 'top 60%',
+              scrub: 0.4,
             },
           }
         );
@@ -99,9 +100,9 @@ export default function Packages() {
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: cardsRef.current,
-                start: 'top 75%',
-                end: 'top 45%',
-                scrub: 1,
+                start: 'top 80%',
+                end: 'top 50%',
+                scrub: 0.4,
               },
             }
           );
@@ -142,7 +143,7 @@ export default function Packages() {
             {packages.map((pkg, index) => (
               <div
                 key={index}
-                className={`package-card relative card-elegant p-8 lg:p-10 transition-all duration-300 hover:-translate-y-1.5 ${pkg.popular ? 'ring-2 ring-gold' : ''
+                className={`package-card relative card-elegant p-8 lg:p-10 hover:-translate-y-1.5 transition-transform ${pkg.popular ? 'ring-2 ring-gold' : ''
                   }`}
               >
                 {pkg.popular && (
@@ -165,7 +166,7 @@ export default function Packages() {
                 <p className="text-muted-foreground text-sm mb-4">{pkg.description}</p>
 
                 {/* Price */}
-                <div className="font-serif text-3xl text-gold mb-6">
+                <div className="font-serif text-4xl text-gold mb-6 font-medium">
                   {pkg.price}
                 </div>
 

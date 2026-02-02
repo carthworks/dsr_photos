@@ -73,6 +73,7 @@ export default function Details() {
   return (
     <section
       ref={sectionRef}
+      id="details"
       className="relative z-50 bg-background py-16 lg:py-0 transition-colors duration-500 px-6 lg:px-0"
     >
       <div className="max-w-7xl mx-auto lg:max-w-none h-full relative flex flex-col-reverse lg:block">

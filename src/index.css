@@ -221,8 +221,8 @@
 
 /* Card styles */
 .card-elegant {
-  @apply rounded-[22px] bg-card border border-border transition-all duration-500;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.05);
+  @apply rounded-[22px] bg-card border border-border;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
 }
 
 /* Label style */
