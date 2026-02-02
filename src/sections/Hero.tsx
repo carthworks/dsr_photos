@@ -260,17 +260,16 @@ export default function Hero() {
         {/* Dynamic Headline based on current slide */}
         <div
           ref={headlineRef}
-          className="text-center text-white mb-8 transition-colors duration-500"
-          style={{ marginTop: '-5vh' }}
+          className="text-center text-white mb-12 flex flex-col items-center justify-center transition-colors duration-500"
         >
           <h1
-            className="font-serif font-medium leading-[1.05] tracking-[-0.01em] mb-4 transition-all duration-500"
-            style={{ fontSize: 'clamp(36px, 5vw, 72px)' }}
+            className="font-serif font-medium leading-[1.05] tracking-[-0.01em] mb-6 transition-all duration-500 md:mb-4 lg:-mt-[5vh]"
+            style={{ fontSize: 'clamp(36px, 5.5vw, 72px)' }}
           >
             <span className="word inline-block">{slides[currentSlide]?.title.split(' ')[0]}</span>{' '}
             <span className="word inline-block">{slides[currentSlide]?.title.split(' ')[1]}</span>
           </h1>
-          <p className="text-white/80 text-lg md:text-xl font-light tracking-wide">
+          <p className="text-white/80 text-base md:text-xl font-light tracking-wide max-w-[90vw]">
             {slides[currentSlide]?.subtitle}
           </p>
         </div>
@@ -279,8 +278,7 @@ export default function Hero() {
         <button
           ref={ctaRef}
           onClick={scrollToPortfolio}
-          className="btn-pill-primary absolute"
-          style={{ bottom: '20vh' }}
+          className="btn-pill-primary md:absolute md:bottom-[20vh]"
         >
           View Portfolio
         </button>
@@ -288,7 +286,7 @@ export default function Hero() {
         {/* Micro Caption */}
         <p
           ref={captionRef}
-          className="absolute text-white/70 text-sm font-light tracking-wide"
+          className="hidden md:block absolute text-white/70 text-sm font-light tracking-wide"
           style={{ bottom: '8vh', right: '4vw' }}
         >
           Fashion, Wedding & More - Coimbatore, Tamil Nadu

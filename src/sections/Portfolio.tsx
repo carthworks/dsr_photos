@@ -26,7 +26,8 @@ const portfolioImages = [
 
 export default function Portfolio() {
   const sectionRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
+  const leftImageRef = useRef<HTMLDivElement>(null);
+  const rightImageRef = useRef<HTMLDivElement>(null);
   const textCardRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
 
@@ -42,46 +43,60 @@ export default function Portfolio() {
     const section = sectionRef.current;
     if (!section) return;
 
-    const scrollTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section,
-        start: 'top top',
-        end: '+=130%',
-        pin: true,
-        scrub: 0.6,
-      },
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1024px)", () => {
+      const scrollTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=130%',
+          pin: true,
+          scrub: 0.6,
+        },
+      });
+
+      // Left image card entrance
+      scrollTl.fromTo(
+        leftImageRef.current,
+        { x: '-60vw', opacity: 0, scale: 0.98 },
+        { x: 0, opacity: 1, scale: 1, ease: 'none' },
+        0
+      );
+
+      // Right image card entrance
+      scrollTl.fromTo(
+        rightImageRef.current,
+        { x: '60vw', opacity: 0, scale: 0.98 },
+        { x: 0, opacity: 1, scale: 1, ease: 'none' },
+        0
+      );
+
+      // Left text card entrance
+      scrollTl.fromTo(
+        textCardRef.current,
+        { x: '-40vw', opacity: 0 },
+        { x: 0, opacity: 1, ease: 'none' },
+        0.05
+      );
+
+      // EXIT (70%-100%)
+      scrollTl.fromTo(
+        [leftImageRef.current, rightImageRef.current],
+        { x: 0, opacity: 1 },
+        { x: '18vw', opacity: 0, ease: 'power2.in' },
+        0.7
+      );
+
+      scrollTl.fromTo(
+        textCardRef.current,
+        { x: 0, opacity: 1 },
+        { x: '-18vw', opacity: 0, ease: 'power2.in' },
+        0.7
+      );
     });
 
-    // Right image card animation
-    scrollTl.fromTo(
-      imageRef.current,
-      { x: '60vw', opacity: 0, scale: 0.98 },
-      { x: 0, opacity: 1, scale: 1, ease: 'none' },
-      0
-    );
-
-    // Left text card animation
-    scrollTl.fromTo(
-      textCardRef.current,
-      { x: '-40vw', opacity: 0 },
-      { x: 0, opacity: 1, ease: 'none' },
-      0.05
-    );
-
-    // EXIT (70%-100%)
-    scrollTl.fromTo(
-      imageRef.current,
-      { x: 0, opacity: 1 },
-      { x: '18vw', opacity: 0, ease: 'power2.in' },
-      0.7
-    );
-
-    scrollTl.fromTo(
-      textCardRef.current,
-      { x: 0, opacity: 1 },
-      { x: '-18vw', opacity: 0, ease: 'power2.in' },
-      0.7
-    );
+    return () => mm.revert();
   }, { scope: sectionRef });
 
   // Gallery animation
@@ -121,89 +136,121 @@ export default function Portfolio() {
       <section
         ref={sectionRef}
         id="portfolio"
-        className="relative w-full h-screen overflow-hidden z-40 bg-background transition-colors duration-500"
+        className="relative w-full h-auto lg:h-screen overflow-hidden lg:overflow-hidden z-40 bg-background transition-colors duration-500 py-16 lg:py-0 px-6 lg:px-0"
       >
-        {/* Left Image Card */}
-        <div
-          ref={imageRef}
-          className="absolute rounded-2xl overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.10)]"
-          style={{
-            left: '6vw',
-            top: '14vh',
-            width: '54vw',
-            height: '72vh',
-          }}
-        >
-          <img
-            src="/images/process_couple_laughing.jpg"
-            alt="Couple laughing"
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        {/* Right Text Card */}
-        <div
-          ref={textCardRef}
-          className="absolute card-elegant p-10 lg:p-12"
-          style={{
-            left: '62vw',
-            top: '20vh',
-            width: '32vw',
-            minWidth: '320px',
-          }}
-        >
-          {/* Badge */}
-          <span className="inline-block px-4 py-1.5 border border-gold text-gold text-xs uppercase tracking-[0.18em] rounded-full mb-8">
-            Selected work
-          </span>
-
-          {/* Headline */}
-          <h2
-            className="font-serif font-medium text-foreground mb-6"
-            style={{ fontSize: 'clamp(26px, 2.6vw, 40px)', lineHeight: 1.1 }}
-          >
-            A gallery of visual stories.
-          </h2>
-
-          {/* Body */}
-          <p className="text-muted-foreground leading-relaxed mb-8">
-            From fashion editorials to wedding celebrations—each project is unique,
-            and the result is always crafted with care.
-          </p>
-
-          {/* CTA Link */}
-          <button
-            onClick={() => {
-              const gallery = document.getElementById('gallery-section');
-              gallery?.scrollIntoView({ behavior: 'smooth' });
+        <div className="max-w-7xl mx-auto lg:max-w-none h-full relative flex flex-col lg:block">
+          {/* Left Image Card */}
+          <div
+            ref={leftImageRef}
+            className="relative lg:absolute rounded-2xl overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.10)] mb-8 lg:mb-0"
+            style={{
+              left: 'var(--lg-left, auto)',
+              top: 'var(--lg-top, auto)',
+              width: 'var(--lg-width, 100%)',
+              height: 'var(--lg-height, 40vh)',
             }}
-            className="group flex items-center gap-2 text-foreground font-medium hover:text-gold transition-colors"
           >
-            <span className="link-underline">Explore the portfolio</span>
-            <ArrowRight
-              size={16}
-              className="transition-transform group-hover:translate-x-1"
+            <style>{`
+              @media (min-width: 1024px) {
+                #portfolio .relative.lg\\:absolute:first-of-type {
+                  --lg-left: 6vw;
+                  --lg-top: 14vh;
+                  --lg-width: 32vw;
+                  --lg-height: 72vh;
+                }
+              }
+            `}</style>
+            <img
+              src="/images/process_couple_laughing.jpg"
+              alt="Couple laughing"
+              className="w-full h-full object-cover"
             />
-          </button>
-        </div>
+          </div>
 
-        {/* Right Image Card */}
-        <div
-          ref={imageRef}
-          className="absolute rounded-2xl overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.10)] cursor-pointer image-hover"
-          style={{
-            left: '42vw',
-            top: '14vh',
-            width: '52vw',
-            height: '72vh',
-          }}
-          onClick={() => openLightbox(0)}
-        >
-          <img
-            src="/images/portfolio_ceremony_walk.jpg"
-            alt="Wedding ceremony"
-            className="w-full h-full object-cover"
-          />
+          {/* Text Card */}
+          <div
+            ref={textCardRef}
+            className="relative lg:absolute card-elegant p-8 lg:p-12 mb-8 lg:mb-0 z-10"
+            style={{
+              left: 'var(--lg-text-left, auto)',
+              top: 'var(--lg-text-top, auto)',
+              width: 'var(--lg-text-width, 100%)',
+              minWidth: 'var(--lg-text-min-width, 0)',
+            }}
+          >
+            <style>{`
+              @media (min-width: 1024px) {
+                #portfolio .card-elegant {
+                  --lg-text-left: 42vw;
+                  --lg-text-top: 20vh;
+                  --lg-text-width: 32vw;
+                  --lg-text-min-width: 320px;
+                }
+              }
+            `}</style>
+            {/* Badge */}
+            <span className="inline-block px-4 py-1.5 border border-gold text-gold text-xs uppercase tracking-[0.18em] rounded-full mb-8">
+              Selected work
+            </span>
+
+            {/* Headline */}
+            <h2
+              className="font-serif font-medium text-foreground mb-6"
+              style={{ fontSize: 'clamp(26px, 2.6vw, 40px)', lineHeight: 1.1 }}
+            >
+              Selected work.
+            </h2>
+
+            {/* Body */}
+            <p className="text-muted-foreground leading-relaxed mb-8">
+              From fashion editorials to wedding celebrations—each project is unique,
+              and the result is always crafted with care.
+            </p>
+
+            {/* CTA Link */}
+            <button
+              onClick={() => {
+                const gallery = document.getElementById('gallery-section');
+                gallery?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="group flex items-center gap-2 text-foreground font-medium hover:text-gold transition-colors"
+            >
+              <span className="link-underline">Explore the portfolio</span>
+              <ArrowRight
+                size={16}
+                className="transition-transform group-hover:translate-x-1"
+              />
+            </button>
+          </div>
+
+          {/* Right Image Card */}
+          <div
+            ref={rightImageRef}
+            className="relative lg:absolute rounded-2xl overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.10)] cursor-pointer image-hover mb-8 lg:mb-0"
+            style={{
+              left: 'var(--lg-right-left, auto)',
+              top: 'var(--lg-right-top, auto)',
+              width: 'var(--lg-right-width, 100%)',
+              height: 'var(--lg-right-height, 40vh)',
+            }}
+            onClick={() => openLightbox(0)}
+          >
+            <style>{`
+              @media (min-width: 1024px) {
+                #portfolio .relative.lg\\:absolute:last-of-type {
+                  --lg-right-left: 78vw;
+                  --lg-right-top: 14vh;
+                  --lg-right-width: 18vw;
+                  --lg-right-height: 72vh;
+                }
+              }
+            `}</style>
+            <img
+              src="/images/portfolio_ceremony_walk.jpg"
+              alt="Wedding ceremony"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </section>
 

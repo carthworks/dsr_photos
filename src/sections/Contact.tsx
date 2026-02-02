@@ -20,42 +20,46 @@ export default function Contact() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Left text animation
-      gsap.fromTo(
-        leftRef.current,
-        { x: -24, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: leftRef.current,
-            start: 'top 80%',
-            end: 'top 55%',
-            scrub: 1,
-          },
-        }
-      );
+      const mm = gsap.matchMedia();
 
-      // Form animation
-      gsap.fromTo(
-        formRef.current,
-        { x: 24, opacity: 0, scale: 0.99 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: formRef.current,
-            start: 'top 80%',
-            end: 'top 55%',
-            scrub: 1,
-          },
-        }
-      );
+      mm.add("(min-width: 1024px)", () => {
+        // Left text animation
+        gsap.fromTo(
+          leftRef.current,
+          { x: -24, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: leftRef.current,
+              start: 'top 80%',
+              end: 'top 55%',
+              scrub: 1,
+            },
+          }
+        );
+
+        // Form animation
+        gsap.fromTo(
+          formRef.current,
+          { x: 24, opacity: 0, scale: 0.99 },
+          {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: formRef.current,
+              start: 'top 80%',
+              end: 'top 55%',
+              scrub: 1,
+            },
+          }
+        );
+      });
     }, section);
 
     return () => ctx.revert();

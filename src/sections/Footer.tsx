@@ -89,7 +89,15 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-muted-foreground/60 text-sm">
-            © 2026 Dsr Photos & Videos. All rights reserved.
+            © 2026 Dsr Photos & Videos. All rights reserved. Crafted by{' '}
+            <a
+              href="https://github.com/carthworks"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground hover:text-gold transition-colors font-medium underline underline-offset-4"
+            >
+              carthworks
+            </a>
           </p>
           <div className="flex gap-6">
             <button className="text-muted-foreground/60 hover:text-foreground transition-colors text-sm">

@@ -36,45 +36,49 @@ export default function Testimonials() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Heading animation
-      gsap.fromTo(
-        headingRef.current,
-        { y: 18, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: 'top 80%',
-            end: 'top 55%',
-            scrub: 1,
-          },
-        }
-      );
+      const mm = gsap.matchMedia();
 
-      // Cards animation
-      const cards = cardsRef.current?.querySelectorAll('.testimonial-card');
-      if (cards) {
+      mm.add("(min-width: 1024px)", () => {
+        // Heading animation
         gsap.fromTo(
-          cards,
-          { y: 30, opacity: 0 },
+          headingRef.current,
+          { y: 18, opacity: 0 },
           {
             y: 0,
             opacity: 1,
             duration: 0.8,
-            stagger: 0.15,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 75%',
-              end: 'top 45%',
+              trigger: headingRef.current,
+              start: 'top 80%',
+              end: 'top 55%',
               scrub: 1,
             },
           }
         );
-      }
+
+        // Cards animation
+        const cards = cardsRef.current?.querySelectorAll('.testimonial-card');
+        if (cards) {
+          gsap.fromTo(
+            cards,
+            { y: 30, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.15,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: cardsRef.current,
+                start: 'top 75%',
+                end: 'top 45%',
+                scrub: 1,
+              },
+            }
+          );
+        }
+      });
     }, section);
 
     return () => ctx.revert();

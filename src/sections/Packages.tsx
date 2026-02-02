@@ -63,46 +63,50 @@ export default function Packages() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Heading animation
-      gsap.fromTo(
-        headingRef.current,
-        { y: 24, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: 'top 80%',
-            end: 'top 55%',
-            scrub: 1,
-          },
-        }
-      );
+      const mm = gsap.matchMedia();
 
-      // Cards animation
-      const cards = cardsRef.current?.querySelectorAll('.package-card');
-      if (cards) {
+      mm.add("(min-width: 1024px)", () => {
+        // Heading animation
         gsap.fromTo(
-          cards,
-          { y: 40, opacity: 0, scale: 0.98 },
+          headingRef.current,
+          { y: 24, opacity: 0 },
           {
             y: 0,
             opacity: 1,
-            scale: 1,
             duration: 0.8,
-            stagger: 0.15,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 75%',
-              end: 'top 45%',
+              trigger: headingRef.current,
+              start: 'top 80%',
+              end: 'top 55%',
               scrub: 1,
             },
           }
         );
-      }
+
+        // Cards animation
+        const cards = cardsRef.current?.querySelectorAll('.package-card');
+        if (cards) {
+          gsap.fromTo(
+            cards,
+            { y: 40, opacity: 0, scale: 0.98 },
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              duration: 0.8,
+              stagger: 0.15,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: cardsRef.current,
+                start: 'top 75%',
+                end: 'top 45%',
+                scrub: 1,
+              },
+            }
+          );
+        }
+      });
     }, section);
 
     return () => ctx.revert();
@@ -179,8 +183,8 @@ export default function Packages() {
                 <button
                   onClick={() => setSelectedPackage(pkg)}
                   className={`w-full btn-pill ${pkg.popular
-                      ? 'bg-gold text-white hover:bg-gold-dark'
-                      : 'btn-pill-outline'
+                    ? 'bg-gold text-white hover:bg-gold-dark'
+                    : 'btn-pill-outline'
                     }`}
                 >
                   Inquire Now

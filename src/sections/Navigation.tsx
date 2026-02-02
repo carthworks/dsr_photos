@@ -33,7 +33,7 @@ export default function Navigation() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${isScrolled
           ? 'bg-background/90 backdrop-blur-md shadow-sm'
           : 'bg-transparent'
           }`}
@@ -79,7 +79,7 @@ export default function Navigation() {
       </nav>
 
       <div
-        className={`fixed inset-0 z-40 bg-background transition-transform duration-500 md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed inset-0 z-[90] bg-background transition-transform duration-500 md:hidden ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full pointer-events-none'
           }`}
       >
         <div className="flex flex-col items-center justify-center h-full gap-8">

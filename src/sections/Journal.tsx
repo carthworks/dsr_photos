@@ -39,45 +39,49 @@ export default function Journal() {
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Header animation
-      gsap.fromTo(
-        headerRef.current,
-        { y: 20, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: 'top 80%',
-            end: 'top 55%',
-            scrub: 1,
-          },
-        }
-      );
+      const mm = gsap.matchMedia();
 
-      // Cards animation
-      const cards = cardsRef.current?.querySelectorAll('.article-card');
-      if (cards) {
+      mm.add("(min-width: 1024px)", () => {
+        // Header animation
         gsap.fromTo(
-          cards,
-          { y: 26, opacity: 0 },
+          headerRef.current,
+          { y: 20, opacity: 0 },
           {
             y: 0,
             opacity: 1,
             duration: 0.8,
-            stagger: 0.12,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 75%',
-              end: 'top 45%',
+              trigger: headerRef.current,
+              start: 'top 80%',
+              end: 'top 55%',
               scrub: 1,
             },
           }
         );
-      }
+
+        // Cards animation
+        const cards = cardsRef.current?.querySelectorAll('.article-card');
+        if (cards) {
+          gsap.fromTo(
+            cards,
+            { y: 26, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.12,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: cardsRef.current,
+                start: 'top 75%',
+                end: 'top 45%',
+                scrub: 1,
+              },
+            }
+          );
+        }
+      });
     }, section);
 
     return () => ctx.revert();
