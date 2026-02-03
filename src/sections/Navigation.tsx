@@ -5,7 +5,7 @@ const navLinks = [
   { label: 'Work', href: '#portfolio' },
   { label: 'Travel', href: '#destinations' },
   { label: 'Process', href: '#process' },
-  { label: 'Packages', href: '#packages' },
+  // { label: 'Packages', href: '#packages' },
   { label: 'Q&A', href: '#faq' },
   { label: 'Journal', href: '#journal' },
   { label: 'Contact', href: '#contact' },

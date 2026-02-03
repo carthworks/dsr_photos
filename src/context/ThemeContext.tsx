@@ -12,7 +12,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [theme, setThemeState] = useState<ThemeType>(() => {
         const saved = localStorage.getItem('app-theme');
-        return (saved as ThemeType) || 'default';
+        return (saved as ThemeType) || 'glassmorphism';
     });
 
     const setTheme = (newTheme: ThemeType) => {

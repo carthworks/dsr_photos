@@ -17,7 +17,7 @@ const slides = [
   },
   {
     type: 'video',
-    src: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    src: 'https://www.youtube.com/watch?v=oMdvMTIQS9g',
     title: 'Cinematic Stories',
     subtitle: 'Motion that moves hearts',
   },
@@ -209,11 +209,28 @@ export default function Hero() {
 
   // Handle video mute toggle
   const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
+    // Toggle state first
+    setIsMuted(prev => !prev);
+
+    // For native video, the state update handles the prop.
+    // For YouTube, we need to send a command to avoid iframe reload.
+    // The useEffect below will handle the postMessage when isMuted changes.
   };
+
+  // Sync mute state to YouTube
+  useEffect(() => {
+    const activeSlide = slides[currentSlide];
+    if (activeSlide?.type === 'video' && (activeSlide.src.includes('youtube') || activeSlide.src.includes('youtu.be'))) {
+      const iframe = document.getElementById(`youtube-player-${currentSlide}`) as HTMLIFrameElement;
+      if (iframe?.contentWindow) {
+        iframe.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: isMuted ? 'mute' : 'unMute',
+          args: []
+        }), '*');
+      }
+    }
+  }, [isMuted, currentSlide]);
 
   return (
     <section
@@ -226,18 +243,47 @@ export default function Hero() {
           {slides.map((slide, index) => (
             <div
               key={index}
-              className="flex-[0_0_100%] min-w-0 relative h-full"
+              className={`flex-[0_0_100%] min-w-0 relative h-full ${slide.type === 'video' ? 'cursor-pointer' : ''}`}
+              onClick={() => {
+                if (slide.type === 'video') toggleMute();
+              }}
             >
               {slide.type === 'video' ? (
-                <video
-                  ref={index === currentSlide ? videoRef : null}
-                  src={slide.src}
-                  autoPlay
-                  muted={isMuted}
-                  loop
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
+                (() => {
+                  const isYouTube = slide.src.includes('youtube') || slide.src.includes('youtu.be');
+                  const isActive = index === currentSlide;
+
+                  if (isYouTube) {
+                    const videoId = slide.src.match(/(?:youtu\.be\/|youtube\.com\/.*v=|embed\/|v\/)([^&?]*)/)?.[1];
+
+                    return (
+                      <div className="w-full h-full relative pointer-events-none overflow-hidden">
+                        <iframe
+                          id={`youtube-player-${index}`}
+                          // Initialize with mute=1 for autoplay. We control unmuting via postMessage to avoid reload.
+                          src={`https://www.youtube.com/embed/${videoId}?autoplay=${isActive ? 1 : 0}&mute=1&controls=0&disablekb=1&fs=0&loop=1&modestbranding=1&playsinline=1&rel=0&showinfo=0&iv_load_policy=3&playlist=${videoId}&enablejsapi=1`}
+                          className="absolute top-1/2 left-1/2 w-[300%] h-[300%] -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          style={{
+                            pointerEvents: 'none',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      </div>
+                    );
+                  }
+                  return (
+                    <video
+                      ref={index === currentSlide ? videoRef : null}
+                      src={slide.src}
+                      autoPlay
+                      muted={isMuted}
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                  );
+                })()
               ) : (
                 <img
                   src={slide.src}
@@ -245,12 +291,13 @@ export default function Hero() {
                   className="w-full h-full object-cover"
                 />
               )}
-              {/* Dark overlay for text readability */}
-              <div className="absolute inset-0 bg-black/40" />
+              {/* Dark overlay for text readability - Click through for video interaction */}
+              <div className="absolute inset-0 bg-black/40 pointer-events-none" />
             </div>
           ))}
         </div>
       </div>
+
 
       {/* Vignette */}
       <div className="vignette" />
@@ -370,6 +417,6 @@ export default function Hero() {
           }
         }
       `}</style>
-    </section>
+    </section >
   );
 }

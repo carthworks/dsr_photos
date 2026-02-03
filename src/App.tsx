@@ -109,7 +109,7 @@ function App() {
           <Destinations />
           <Process />
           <Details />
-          <Packages />
+          {/* <Packages /> */}
           <FAQs />
           <Testimonials />
           <Journal />

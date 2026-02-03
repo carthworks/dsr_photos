@@ -1,7 +1,7 @@
 import { useRef, useLayoutEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Mail, MapPin, Clock, Send } from 'lucide-react';
+import { Mail, MapPin, Clock, Send, Calendar, Navigation, DollarSign } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -69,10 +69,32 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
 
-    toast.success('Thank you! We\'ll be in touch within 48 hours.');
+    // Construct Mailto Body
+    const subject = `Inquiry: ${data.eventType || 'New Project'} - ${data.name}`;
+    const body = `
+Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone}
+Date: ${data.date}
+Location: ${data.location}
+Event Type: ${data.eventType}
+Budget Range: ${data.budget}
+Referral: ${data.referral}
+
+Message:
+${data.message}
+    `;
+
+    // Simulate network delay for UX
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    // Open Mail Client
+    window.open(`mailto:tkarthikeyan@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+
+    toast.success('Opening your email client to send the inquiry!');
     setIsSubmitting(false);
     (e.target as HTMLFormElement).reset();
   };
@@ -83,10 +105,13 @@ export default function Contact() {
       id="contact"
       className="relative z-90 bg-background py-24 lg:py-32 px-6 lg:px-12 transition-colors duration-500"
     >
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24">
           {/* Left Column - Text */}
           <div ref={leftRef}>
+            <span className="text-xs text-muted-foreground uppercase tracking-[0.2em] mb-4 block">
+              Get in touch
+            </span>
             <h2
               className="font-serif font-medium text-foreground mb-6"
               style={{ fontSize: 'clamp(32px, 3.6vw, 52px)', lineHeight: 1.1 }}
@@ -94,36 +119,36 @@ export default function Contact() {
               Let&apos;s create something beautiful.
             </h2>
 
-            <p className="text-muted-foreground leading-relaxed mb-10">
-              Tell us about your shoot requirements. We&apos;ll reply within 48 hours
-              with availability and next steps.
+            <p className="text-muted-foreground leading-relaxed mb-10 max-w-md">
+              Whether it's a destination wedding, an editorial shoot, or a portrait session,
+              we'd love to hear your story. Fill out the form, and we'll be in touch within 24 hours.
             </p>
 
             {/* Contact Details */}
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
-                  <Mail size={18} className="text-gold" />
+                <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
+                  <Mail size={20} className="text-gold" />
                 </div>
                 <div>
-                  <p className="text-muted-foreground/50 text-sm mb-1">Email</p>
+                  <p className="text-muted-foreground/50 text-xs uppercase tracking-wider mb-1">Email directly</p>
                   <a
-                    href="mailto:dsrphotosvideos@gmail.com"
-                    className="text-foreground hover:text-gold transition-colors"
+                    href="mailto:tkarthikeyan@gmail.com"
+                    className="text-foreground text-lg hover:text-gold transition-colors font-serif"
                   >
-                    dsrphotosvideos@gmail.com
+                    tkarthikeyan@gmail.com
                   </a>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
-                  <MapPin size={18} className="text-gold" />
+                <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
+                  <MapPin size={20} className="text-gold" />
                 </div>
                 <div>
-                  <p className="text-muted-foreground/50 text-sm mb-1">Location</p>
-                  <p className="text-foreground">
-                    No 2 First Floor, K.K Pudur, Back to Kannan Department Store,<br />
+                  <p className="text-muted-foreground/50 text-xs uppercase tracking-wider mb-1">Studio</p>
+                  <p className="text-foreground leading-relaxed">
+                    No 2 First Floor, K.K Pudur,<br />
                     Manian Velappar 6th Street, Saibaba Colony,<br />
                     Coimbatore-641011, Tamil Nadu
                   </p>
@@ -131,12 +156,12 @@ export default function Contact() {
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center flex-shrink-0">
-                  <Clock size={18} className="text-gold" />
+                <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
+                  <Clock size={20} className="text-gold" />
                 </div>
                 <div>
-                  <p className="text-muted-foreground/50 text-sm mb-1">Response time</p>
-                  <p className="text-foreground">1–2 business days</p>
+                  <p className="text-muted-foreground/50 text-xs uppercase tracking-wider mb-1">Office Hours</p>
+                  <p className="text-foreground">Mon – Fri: 9am – 6pm<br />Sat: By appointment</p>
                 </div>
               </div>
             </div>
@@ -146,97 +171,174 @@ export default function Contact() {
           <div ref={formRef}>
             <form
               onSubmit={handleSubmit}
-              className="card-elegant p-8 lg:p-10"
+              className="card-elegant p-8 lg:p-10 border border-gold/20 shadow-2xl bg-card/50 backdrop-blur-sm"
             >
-              <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 {/* Name */}
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-foreground">
-                    Name
+                  <Label htmlFor="name" className="text-foreground text-xs uppercase tracking-wider">
+                    Name *
                   </Label>
                   <Input
                     id="name"
                     name="name"
-                    placeholder="Your name"
+                    placeholder="Your full name"
                     required
-                    className="bg-card border-border focus:border-gold focus:ring-gold text-foreground"
+                    className="bg-background border-border focus:border-gold focus:ring-gold h-11"
                   />
                 </div>
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-foreground">
-                    Email
+                  <Label htmlFor="email" className="text-foreground text-xs uppercase tracking-wider">
+                    Email *
                   </Label>
                   <Input
                     id="email"
                     name="email"
                     type="email"
-                    placeholder="your@email.com"
+                    placeholder="hello@example.com"
                     required
-                    className="bg-card border-border focus:border-gold focus:ring-gold text-foreground"
+                    className="bg-background border-border focus:border-gold focus:ring-gold h-11"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* Phone */}
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-foreground text-xs uppercase tracking-wider">
+                    Phone
+                  </Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+91..."
+                    className="bg-background border-border focus:border-gold focus:ring-gold h-11"
                   />
                 </div>
 
-                {/* Event Date */}
+                {/* Event Type */}
                 <div className="space-y-2">
-                  <Label htmlFor="date" className="text-foreground">
+                  <Label htmlFor="eventType" className="text-foreground text-xs uppercase tracking-wider">
+                    Shoot Type *
+                  </Label>
+                  <select
+                    id="eventType"
+                    name="eventType"
+                    required
+                    className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="Wedding">Wedding</option>
+                    <option value="Fashion Editorial">Fashion Editorial</option>
+                    <option value="Portrait Session">Portrait Session</option>
+                    <option value="Event Coverage">Event Coverage</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* Date */}
+                <div className="space-y-2">
+                  <Label htmlFor="date" className="text-foreground text-xs uppercase tracking-wider">
                     Event Date
                   </Label>
-                  <Input
-                    id="date"
-                    name="date"
-                    type="date"
-                    className="bg-card border-border focus:border-gold focus:ring-gold text-foreground"
-                  />
+                  <div className="relative">
+                    <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="date"
+                      name="date"
+                      type="date"
+                      className="bg-background border-border focus:border-gold focus:ring-gold pl-10 h-11"
+                    />
+                  </div>
                 </div>
 
-                {/* Event Location */}
+                {/* Location */}
                 <div className="space-y-2">
-                  <Label htmlFor="location" className="text-foreground">
-                    Event Location
+                  <Label htmlFor="location" className="text-foreground text-xs uppercase tracking-wider">
+                    Venue / Location
                   </Label>
-                  <Input
-                    id="location"
-                    name="location"
-                    placeholder="City, State / Country"
-                    className="bg-card border-border focus:border-gold focus:ring-gold text-foreground"
-                  />
+                  <div className="relative">
+                    <Navigation size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="location"
+                      name="location"
+                      placeholder="City or Venue"
+                      className="bg-background border-border focus:border-gold focus:ring-gold pl-10 h-11"
+                    />
+                  </div>
                 </div>
-
-                {/* Message */}
-                <div className="space-y-2">
-                  <Label htmlFor="message" className="text-foreground">
-                    Tell us about your shoot
-                  </Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder="Share your vision, shoot type (fashion/wedding/portrait), or any questions..."
-                    rows={4}
-                    className="bg-card border-border focus:border-gold focus:ring-gold resize-none text-foreground"
-                  />
-                </div>
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full btn-pill bg-gold text-white hover:bg-gold-dark flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send size={16} />
-                      Request availability
-                    </>
-                  )}
-                </button>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                {/* Budget */}
+                <div className="space-y-2">
+                  <Label htmlFor="budget" className="text-foreground text-xs uppercase tracking-wider">
+                    Budget Range
+                  </Label>
+                  <div className="relative">
+                    <DollarSign size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="budget"
+                      name="budget"
+                      placeholder="Estimated budget"
+                      className="bg-background border-border focus:border-gold focus:ring-gold pl-10 h-11"
+                    />
+                  </div>
+                </div>
+
+                {/* Referral */}
+                <div className="space-y-2">
+                  <Label htmlFor="referral" className="text-foreground text-xs uppercase tracking-wider">
+                    How did you find us?
+                  </Label>
+                  <Input
+                    id="referral"
+                    name="referral"
+                    placeholder="Google, Instagram, Referral..."
+                    className="bg-background border-border focus:border-gold focus:ring-gold h-11"
+                  />
+                </div>
+              </div>
+
+
+              {/* Message */}
+              <div className="space-y-2 mb-8">
+                <Label htmlFor="message" className="text-foreground text-xs uppercase tracking-wider">
+                  Tell us your story *
+                </Label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  placeholder="Share your vision, any specific requests, or what you love most about our work..."
+                  rows={4}
+                  required
+                  className="bg-background border-border focus:border-gold focus:ring-gold resize-none"
+                />
+              </div>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full btn-pill bg-gold text-white hover:bg-gold-dark flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed h-12 text-sm font-medium tracking-wide"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Preparing...
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    Send Inquiry to Karthikeyan
+                  </>
+                )}
+              </button>
             </form>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
@@ -15,24 +15,39 @@ interface PortfolioItem {
   category: string;
   type?: 'image' | 'video';
   poster?: string;
+  id?: string;
 }
 
-const portfolioImages: PortfolioItem[] = [
-  { src: 'https://www.youtube.com/watch?v=DtFWWYPnxjQ', alt: 'Cinematic Wedding Highlight', category: 'Films', type: 'video', poster: '/images/portfolio_dance.jpg' },
+const initialImages: PortfolioItem[] = [
+  { src: 'https://www.youtube.com/watch?v=DtFWWYPnxjQ', alt: 'Loading...', category: 'Films', type: 'video' },
   { src: '/images/portfolio_ceremony_walk.jpg', alt: 'Wedding ceremony', category: 'Wedding', type: 'image' },
   { src: '/images/slider_fashion.jpg', alt: 'Fashion editorial', category: 'Fashion', type: 'image' },
   { src: '/images/portfolio_dance.jpg', alt: 'First dance', category: 'Wedding', type: 'image' },
   { src: '/images/slider_portrait.jpg', alt: 'Portrait session', category: 'Portrait', type: 'image' },
   { src: '/images/portfolio_vows.jpg', alt: 'Exchanging vows', category: 'Wedding', type: 'image' },
   { src: '/images/details_rings_macro.jpg', alt: 'Wedding rings', category: 'Details', type: 'image' },
-  { src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', alt: 'Fashion Behind The Scenes', category: 'Films', type: 'video', poster: '/images/slider_fashion.jpg' },
+  { src: 'https://www.youtube.com/watch?v=2w6yFfs-H90', alt: 'Loading...', category: 'Films', type: 'video' },
   { src: '/images/process_couple_laughing.jpg', alt: 'Couple portrait', category: 'Portrait', type: 'image' },
   { src: '/images/slider_wedding.jpg', alt: 'Traditional wedding', category: 'Wedding', type: 'image' },
   { src: '/images/hero_couple_grass.jpg', alt: 'Golden hour portrait', category: 'Portrait', type: 'image' },
   { src: '/images/philosophy_bride_portrait.jpg', alt: 'Bridal portrait', category: 'Wedding', type: 'image' },
   { src: '/images/journal_1.jpg', alt: 'Getting ready', category: 'Details', type: 'image' },
   { src: '/images/journal_2.jpg', alt: 'Venue setup', category: 'Details', type: 'image' },
+  { src: 'https://www.youtube.com/watch?v=_p_YmEtGZmc', alt: 'Loading...', category: 'Films', type: 'video' }
 ];
+
+// Helper to extract YouTube video ID
+function getYouTubeId(url: string) {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+}
+
+// Helper to get YouTube thumbnail
+function getYouTubeThumbnail(url: string) {
+  const id = getYouTubeId(url);
+  return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : '';
+}
 
 export default function Portfolio() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -41,15 +56,42 @@ export default function Portfolio() {
   const textCardRef = useRef<HTMLDivElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
 
+  const [portfolioImages, setPortfolioImages] = useState<PortfolioItem[]>(initialImages);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [activeCategory, setActiveCategory] = useState('All');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Fetch YouTube Titles
+  useEffect(() => {
+    const fetchTitles = async () => {
+      const updatedImages = await Promise.all(
+        initialImages.map(async (item) => {
+          if (item.type === 'video' && item.src.includes('youtube') && item.alt === 'Loading...') {
+            try {
+              const res = await fetch(`https://noembed.com/embed?url=${item.src}`);
+              const data = await res.json();
+              if (data.title) {
+                return { ...item, alt: data.title };
+              }
+            } catch (error) {
+              console.error('Failed to fetch video title:', error);
+            }
+          }
+          return item;
+        })
+      );
+      setPortfolioImages(updatedImages);
+    };
+
+    fetchTitles();
+  }, []);
 
   const filteredImages = activeCategory === 'All'
     ? portfolioImages
     : portfolioImages.filter(img => img.category === activeCategory);
 
   useGSAP(() => {
+    // ... GSAP logic ...
     const section = sectionRef.current;
     if (!section) return;
 
@@ -109,8 +151,9 @@ export default function Portfolio() {
     return () => mm.revert();
   }, { scope: sectionRef });
 
-  // Gallery animation
+
   useGSAP(() => {
+    // ... Gallery animation ...
     const gallery = galleryRef.current;
     if (!gallery) return;
 
@@ -160,6 +203,7 @@ export default function Portfolio() {
               height: 'var(--lg-height, 40vh)',
             }}
           >
+            {/* Same styles */}
             <style>{`
               @media (min-width: 1024px) {
                 #portfolio .relative.lg\\:absolute:first-of-type {
@@ -198,26 +242,19 @@ export default function Portfolio() {
                 }
               }
             `}</style>
-            {/* Badge */}
             <span className="inline-block px-4 py-1.5 border border-gold text-gold text-xs uppercase tracking-[0.18em] rounded-full mb-8">
               Selected work
             </span>
-
-            {/* Headline */}
             <h2
               className="font-serif font-medium text-foreground mb-6"
               style={{ fontSize: 'clamp(26px, 2.6vw, 40px)', lineHeight: 1.1 }}
             >
               Selected work.
             </h2>
-
-            {/* Body */}
             <p className="text-muted-foreground leading-relaxed mb-8">
               From fashion editorials to wedding celebrations—each project is unique,
               and the result is always crafted with care.
             </p>
-
-            {/* CTA Link */}
             <button
               onClick={() => {
                 const gallery = document.getElementById('gallery-section');
@@ -308,47 +345,60 @@ export default function Portfolio() {
             ref={galleryRef}
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
           >
-            {filteredImages.map((image, index) => (
-              <div
-                key={`${image.src}-${index}`}
-                className={`gallery-item relative rounded-2xl overflow-hidden shadow-lg cursor-pointer image-hover group ${index === 0 ? 'col-span-2 row-span-2' :
-                  index === 3 ? 'col-span-2' :
-                    index === 7 ? 'row-span-2' : ''
-                  }`}
-                style={{
-                  height: index === 0 ? '500px' :
-                    index === 3 ? '250px' :
-                      index === 7 ? '500px' : '250px'
-                }}
-                onClick={() => openLightbox(portfolioImages.findIndex(img => img.src === image.src))}
-              >
-                <img
-                  src={image.type === 'video' ? (image.poster || image.src) : image.src}
-                  alt={image.alt}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
+            {filteredImages.map((image, index) => {
+              // Determine poster image
+              let displaySrc = image.src;
+              if (image.type === 'video') {
+                if (image.poster) {
+                  displaySrc = image.poster;
+                } else if (image.src.includes('youtube') || image.src.includes('youtu.be')) {
+                  // Auto-fetch YouTube thumbnail if poster is missing
+                  displaySrc = getYouTubeThumbnail(image.src);
+                }
+              }
 
-                {/* Overlay for all items */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <span className="text-xs uppercase tracking-[0.18em] text-gold mb-1 block">
-                      {image.category}
-                    </span>
-                    <h4 className="font-serif text-lg">{image.alt}</h4>
-                  </div>
-                </div>
+              return (
+                <div
+                  key={`${image.src}-${index}`}
+                  className={`gallery-item relative rounded-2xl overflow-hidden shadow-lg cursor-pointer image-hover group ${index === 0 ? 'col-span-2 row-span-2' :
+                    index === 3 ? 'col-span-2' :
+                      index === 7 ? 'row-span-2' : ''
+                    }`}
+                  style={{
+                    height: index === 0 ? '500px' :
+                      index === 3 ? '250px' :
+                        index === 7 ? '500px' : '250px'
+                  }}
+                  onClick={() => openLightbox(portfolioImages.findIndex(img => img.src === image.src))}
+                >
+                  <img
+                    src={displaySrc}
+                    alt={image.alt}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
 
-                {/* Video Play Icon Overlay */}
-                {image.type === 'video' && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <Play size={24} className="text-white fill-white ml-1" />
+                  {/* Overlay for all items */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute bottom-4 left-4 text-white">
+                      <span className="text-xs uppercase tracking-[0.18em] text-gold mb-1 block">
+                        {image.category}
+                      </span>
+                      <h4 className="font-serif text-lg">{image.alt}</h4>
                     </div>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {/* Video Play Icon Overlay */}
+                  {image.type === 'video' && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Play size={24} className="text-white fill-white ml-1" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Image Count */}
