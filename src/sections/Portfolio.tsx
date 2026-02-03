@@ -24,6 +24,7 @@ const initialImages: PortfolioItem[] = [
   { src: '/images/slider_fashion.jpg', alt: 'Fashion editorial', category: 'Fashion', type: 'image' },
   { src: '/images/portfolio_dance.jpg', alt: 'First dance', category: 'Wedding', type: 'image' },
   { src: '/images/slider_portrait.jpg', alt: 'Portrait session', category: 'Portrait', type: 'image' },
+  { src: '/images/logo_transparent.png', alt: 'Getting ready', category: 'Details', type: 'image' },
   { src: '/images/portfolio_vows.jpg', alt: 'Exchanging vows', category: 'Wedding', type: 'image' },
   { src: '/images/details_rings_macro.jpg', alt: 'Wedding rings', category: 'Details', type: 'image' },
   { src: 'https://www.youtube.com/watch?v=2w6yFfs-H90', alt: 'Loading...', category: 'Films', type: 'video' },
@@ -33,6 +34,7 @@ const initialImages: PortfolioItem[] = [
   { src: '/images/philosophy_bride_portrait.jpg', alt: 'Bridal portrait', category: 'Wedding', type: 'image' },
   { src: '/images/journal_1.jpg', alt: 'Getting ready', category: 'Details', type: 'image' },
   { src: '/images/journal_2.jpg', alt: 'Venue setup', category: 'Details', type: 'image' },
+
   { src: 'https://www.youtube.com/watch?v=_p_YmEtGZmc', alt: 'Loading...', category: 'Films', type: 'video' }
 ];
 

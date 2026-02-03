@@ -51,7 +51,7 @@ export default function Navigation() {
           }`}
       >
         <div className="w-full px-6 lg:px-12">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-20 md:h-28">
             {/* Logo */}
             <a
               ref={logoRef}
@@ -61,7 +61,7 @@ export default function Navigation() {
               <img
                 src="/logo_transparent.png"
                 alt="Dsr Photos & Videos"
-                className="h-10 md:h-12 w-auto object-contain"
+                className="h-14 md:h-24 w-auto object-contain"
               />
             </a>
 
