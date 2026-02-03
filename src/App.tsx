@@ -10,7 +10,7 @@ import Portfolio from './sections/Portfolio';
 import Destinations from './sections/Destinations';
 import Process from './sections/Process';
 import Details from './sections/Details';
-import Packages from './sections/Packages';
+// import Packages from './sections/Packages';
 import FAQs from './sections/FAQs';
 import Testimonials from './sections/Testimonials';
 import Journal from './sections/Journal';

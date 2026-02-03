@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 const navLinks = [
   { label: 'Work', href: '#portfolio' },
@@ -14,6 +16,14 @@ const navLinks = [
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const logoRef = useRef<HTMLAnchorElement>(null);
+
+  useGSAP(() => {
+    gsap.fromTo(logoRef.current,
+      { y: -50, opacity: 0, scale: 0.8 },
+      { y: 0, opacity: 1, scale: 1, duration: 1.5, ease: 'elastic.out(1, 0.5)', delay: 0.5 }
+    );
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +54,7 @@ export default function Navigation() {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <a
+              ref={logoRef}
               href="#"
               className="flex items-center transition-transform duration-300 hover:scale-105"
             >
