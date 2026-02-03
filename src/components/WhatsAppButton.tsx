@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
 
-const phoneNumber = '919876543210'; // Replace with actual WhatsApp number
+const phoneNumber = '919843619091'; // Replace with actual WhatsApp number
 
 const quickMessages = [
   'Hi! I want to book a wedding photoshoot',
