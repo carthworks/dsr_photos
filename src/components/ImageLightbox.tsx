@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download } from 'lucide-react';
 
 interface ImageLightboxProps {
-  images: { src: string; alt: string; category?: string }[];
+  images: { src: string; alt: string; category?: string; type?: 'image' | 'video'; poster?: string }[];
   currentIndex: number;
   isOpen: boolean;
   onClose: () => void;
@@ -93,6 +93,7 @@ export default function ImageLightbox({
   if (!isOpen || !images[currentIndex]) return null;
 
   const currentImage = images[currentIndex];
+  const isVideo = currentImage.type === 'video';
 
   return createPortal(
     <div
@@ -112,8 +113,8 @@ export default function ImageLightbox({
       </button>
 
       {/* Top info bar */}
-      <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/50 to-transparent">
-        <div className="flex items-center justify-between">
+      <div className="absolute top-0 left-0 right-0 p-4 bg-gradient-to-b from-black/50 to-transparent pointer-events-none">
+        <div className="flex items-center justify-between pointer-events-auto">
           <div>
             {currentImage.category && (
               <span className="text-gold text-xs uppercase tracking-[0.18em]">
@@ -125,41 +126,43 @@ export default function ImageLightbox({
             </p>
           </div>
 
-          {/* Zoom controls */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setZoom((z) => Math.max(z - 0.5, 1));
-              }}
-              className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors"
-              aria-label="Zoom out"
-            >
-              <ZoomOut size={18} />
-            </button>
-            <span className="text-white text-sm min-w-[50px] text-center">
-              {Math.round(zoom * 100)}%
-            </span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setZoom((z) => Math.min(z + 0.5, 3));
-              }}
-              className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors"
-              aria-label="Zoom in"
-            >
-              <ZoomIn size={18} />
-            </button>
-            <a
-              href={currentImage.src}
-              download
-              onClick={(e) => e.stopPropagation()}
-              className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors ml-2"
-              aria-label="Download"
-            >
-              <Download size={18} />
-            </a>
-          </div>
+          {/* Zoom controls - Only for images */}
+          {!isVideo && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoom((z) => Math.max(z - 0.5, 1));
+                }}
+                className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors"
+                aria-label="Zoom out"
+              >
+                <ZoomOut size={18} />
+              </button>
+              <span className="text-white text-sm min-w-[50px] text-center">
+                {Math.round(zoom * 100)}%
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoom((z) => Math.min(z + 0.5, 3));
+                }}
+                className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors"
+                aria-label="Zoom in"
+              >
+                <ZoomIn size={18} />
+              </button>
+              <a
+                href={currentImage.src}
+                download
+                onClick={(e) => e.stopPropagation()}
+                className="p-2 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors ml-2"
+                aria-label="Download"
+              >
+                <Download size={18} />
+              </a>
+            </div>
+          )}
         </div>
       </div>
 
@@ -186,21 +189,45 @@ export default function ImageLightbox({
         <ChevronRight size={28} />
       </button>
 
-      {/* Image container */}
+      {/* Media container */}
       <div
-        className="absolute inset-0 flex items-center justify-center p-16"
+        className="absolute inset-0 flex items-center justify-center p-4 md:p-16"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={currentImage.src}
-          alt={currentImage.alt}
-          className="max-w-full max-h-full object-contain transition-transform duration-200"
-          style={{
-            transform: `scale(${zoom})`,
-            cursor: zoom > 1 ? 'grab' : 'default',
-          }}
-          draggable={false}
-        />
+        {isVideo ? (
+          <div className="w-full h-full max-w-5xl max-h-[80vh] flex items-center justify-center bg-black">
+            {currentImage.src.includes('youtube') || currentImage.src.includes('youtu.be') ? (
+              <iframe
+                src={currentImage.src.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/')}
+                title={currentImage.alt}
+                className="w-full h-full aspect-video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <video
+                src={currentImage.src}
+                controls
+                autoPlay
+                className="max-w-full max-h-full"
+                poster={currentImage.poster}
+              >
+                Your browser does not support the video tag.
+              </video>
+            )}
+          </div>
+        ) : (
+          <img
+            src={currentImage.src}
+            alt={currentImage.alt}
+            className="max-w-full max-h-full object-contain transition-transform duration-200"
+            style={{
+              transform: `scale(${zoom})`,
+              cursor: zoom > 1 ? 'grab' : 'default',
+            }}
+            draggable={false}
+          />
+        )}
       </div>
 
       {/* Thumbnail strip */}

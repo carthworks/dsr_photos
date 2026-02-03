@@ -7,9 +7,11 @@ import Navigation from './sections/Navigation';
 import Hero from './sections/Hero';
 import Philosophy from './sections/Philosophy';
 import Portfolio from './sections/Portfolio';
+import Destinations from './sections/Destinations';
 import Process from './sections/Process';
 import Details from './sections/Details';
 import Packages from './sections/Packages';
+import FAQs from './sections/FAQs';
 import Testimonials from './sections/Testimonials';
 import Journal from './sections/Journal';
 import Contact from './sections/Contact';
@@ -104,9 +106,11 @@ function App() {
           <Hero />
           <Philosophy />
           <Portfolio />
+          <Destinations />
           <Process />
           <Details />
           <Packages />
+          <FAQs />
           <Testimonials />
           <Journal />
           <Contact />

@@ -10,8 +10,10 @@ const socialLinks = [
 
 const navLinks = [
   { label: 'Work', href: '#portfolio' },
+  { label: 'Travel', href: '#destinations' },
   { label: 'Process', href: '#process' },
   { label: 'Packages', href: '#packages' },
+  { label: 'Q&A', href: '#faq' },
   { label: 'Journal', href: '#journal' },
   { label: 'Contact', href: '#contact' },
 ];
@@ -36,7 +38,7 @@ export default function Footer() {
               className="flex items-center mb-6 group"
             >
               <img
-                src="/logo_upgrade.png"
+                src="/logo_transparent.png"
                 alt="Dsr Photos & Videos"
                 className="h-12 md:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               />

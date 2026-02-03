@@ -2,26 +2,36 @@ import { useRef, useState, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { ArrowRight, Filter } from 'lucide-react';
+import { ArrowRight, Filter, Play } from 'lucide-react';
 import ImageLightbox from '@/components/ImageLightbox';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const categories = ['All', 'Wedding', 'Fashion', 'Portrait', 'Details'];
+const categories = ['All', 'Wedding', 'Fashion', 'Portrait', 'Films', 'Details'];
 
-const portfolioImages = [
-  { src: '/images/portfolio_ceremony_walk.jpg', alt: 'Wedding ceremony', category: 'Wedding' },
-  { src: '/images/slider_fashion.jpg', alt: 'Fashion editorial', category: 'Fashion' },
-  { src: '/images/portfolio_dance.jpg', alt: 'First dance', category: 'Wedding' },
-  { src: '/images/slider_portrait.jpg', alt: 'Portrait session', category: 'Portrait' },
-  { src: '/images/portfolio_vows.jpg', alt: 'Exchanging vows', category: 'Wedding' },
-  { src: '/images/details_rings_macro.jpg', alt: 'Wedding rings', category: 'Details' },
-  { src: '/images/process_couple_laughing.jpg', alt: 'Couple portrait', category: 'Portrait' },
-  { src: '/images/slider_wedding.jpg', alt: 'Traditional wedding', category: 'Wedding' },
-  { src: '/images/hero_couple_grass.jpg', alt: 'Golden hour portrait', category: 'Portrait' },
-  { src: '/images/philosophy_bride_portrait.jpg', alt: 'Bridal portrait', category: 'Wedding' },
-  { src: '/images/journal_1.jpg', alt: 'Getting ready', category: 'Details' },
-  { src: '/images/journal_2.jpg', alt: 'Venue setup', category: 'Details' },
+interface PortfolioItem {
+  src: string;
+  alt: string;
+  category: string;
+  type?: 'image' | 'video';
+  poster?: string;
+}
+
+const portfolioImages: PortfolioItem[] = [
+  { src: 'https://www.youtube.com/watch?v=DtFWWYPnxjQ', alt: 'Cinematic Wedding Highlight', category: 'Films', type: 'video', poster: '/images/portfolio_dance.jpg' },
+  { src: '/images/portfolio_ceremony_walk.jpg', alt: 'Wedding ceremony', category: 'Wedding', type: 'image' },
+  { src: '/images/slider_fashion.jpg', alt: 'Fashion editorial', category: 'Fashion', type: 'image' },
+  { src: '/images/portfolio_dance.jpg', alt: 'First dance', category: 'Wedding', type: 'image' },
+  { src: '/images/slider_portrait.jpg', alt: 'Portrait session', category: 'Portrait', type: 'image' },
+  { src: '/images/portfolio_vows.jpg', alt: 'Exchanging vows', category: 'Wedding', type: 'image' },
+  { src: '/images/details_rings_macro.jpg', alt: 'Wedding rings', category: 'Details', type: 'image' },
+  { src: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', alt: 'Fashion Behind The Scenes', category: 'Films', type: 'video', poster: '/images/slider_fashion.jpg' },
+  { src: '/images/process_couple_laughing.jpg', alt: 'Couple portrait', category: 'Portrait', type: 'image' },
+  { src: '/images/slider_wedding.jpg', alt: 'Traditional wedding', category: 'Wedding', type: 'image' },
+  { src: '/images/hero_couple_grass.jpg', alt: 'Golden hour portrait', category: 'Portrait', type: 'image' },
+  { src: '/images/philosophy_bride_portrait.jpg', alt: 'Bridal portrait', category: 'Wedding', type: 'image' },
+  { src: '/images/journal_1.jpg', alt: 'Getting ready', category: 'Details', type: 'image' },
+  { src: '/images/journal_2.jpg', alt: 'Venue setup', category: 'Details', type: 'image' },
 ];
 
 export default function Portfolio() {
@@ -301,7 +311,7 @@ export default function Portfolio() {
             {filteredImages.map((image, index) => (
               <div
                 key={`${image.src}-${index}`}
-                className={`gallery-item relative rounded-2xl overflow-hidden shadow-lg cursor-pointer image-hover ${index === 0 ? 'col-span-2 row-span-2' :
+                className={`gallery-item relative rounded-2xl overflow-hidden shadow-lg cursor-pointer image-hover group ${index === 0 ? 'col-span-2 row-span-2' :
                   index === 3 ? 'col-span-2' :
                     index === 7 ? 'row-span-2' : ''
                   }`}
@@ -313,12 +323,14 @@ export default function Portfolio() {
                 onClick={() => openLightbox(portfolioImages.findIndex(img => img.src === image.src))}
               >
                 <img
-                  src={image.src}
+                  src={image.type === 'video' ? (image.poster || image.src) : image.src}
                   alt={image.alt}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300">
+
+                {/* Overlay for all items */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-4 left-4 text-white">
                     <span className="text-xs uppercase tracking-[0.18em] text-gold mb-1 block">
                       {image.category}
@@ -326,6 +338,15 @@ export default function Portfolio() {
                     <h4 className="font-serif text-lg">{image.alt}</h4>
                   </div>
                 </div>
+
+                {/* Video Play Icon Overlay */}
+                {image.type === 'video' && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border border-white/50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <Play size={24} className="text-white fill-white ml-1" />
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

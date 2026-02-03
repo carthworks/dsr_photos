@@ -3,8 +3,10 @@ import { Menu, X } from 'lucide-react';
 
 const navLinks = [
   { label: 'Work', href: '#portfolio' },
+  { label: 'Travel', href: '#destinations' },
   { label: 'Process', href: '#process' },
   { label: 'Packages', href: '#packages' },
+  { label: 'Q&A', href: '#faq' },
   { label: 'Journal', href: '#journal' },
   { label: 'Contact', href: '#contact' },
 ];
@@ -46,7 +48,7 @@ export default function Navigation() {
               className="flex items-center transition-transform duration-300 hover:scale-105"
             >
               <img
-                src="/logo_upgrade.png"
+                src="/logo_transparent.png"
                 alt="Dsr Photos & Videos"
                 className="h-10 md:h-12 w-auto object-contain"
               />
