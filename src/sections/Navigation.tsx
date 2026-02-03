@@ -46,7 +46,7 @@ export default function Navigation() {
               className="flex items-center transition-transform duration-300 hover:scale-105"
             >
               <img
-                src="/logo_alone.png"
+                src="/logo_upgrade.png"
                 alt="Dsr Photos & Videos"
                 className="h-10 md:h-12 w-auto object-contain"
               />

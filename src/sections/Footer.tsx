@@ -36,7 +36,7 @@ export default function Footer() {
               className="flex items-center mb-6 group"
             >
               <img
-                src="/logo_alone.png"
+                src="/logo_upgrade.png"
                 alt="Dsr Photos & Videos"
                 className="h-12 md:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               />
