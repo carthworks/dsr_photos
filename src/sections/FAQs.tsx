@@ -1,6 +1,7 @@
-import { useState, useRef, useLayoutEffect } from 'react';
+import { useState, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { Plus, Minus } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -38,48 +39,46 @@ export default function FAQs() {
         setOpenIndex(openIndex === index ? null : index);
     };
 
-    useLayoutEffect(() => {
-        const ctx = gsap.context(() => {
-            const mm = gsap.matchMedia();
+    useGSAP(() => {
+        const mm = gsap.matchMedia();
 
-            mm.add("(min-width: 1024px)", () => {
-                // Heading Fade In
-                gsap.fromTo(
-                    headingRef.current,
-                    { y: 30, opacity: 0 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.8,
-                        ease: 'power2.out',
-                        scrollTrigger: {
-                            trigger: sectionRef.current,
-                            start: 'top 70%',
-                        }
+        mm.add("(min-width: 1024px)", () => {
+            // Heading Fade In
+            gsap.fromTo(
+                headingRef.current,
+                { y: 30, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: 'top 70%',
                     }
-                );
+                }
+            );
 
-                // List Fade In
-                gsap.fromTo(
-                    listRef.current,
-                    { y: 50, opacity: 0 },
-                    {
-                        y: 0,
-                        opacity: 1,
-                        duration: 0.8,
-                        delay: 0.2,
-                        ease: 'power2.out',
-                        scrollTrigger: {
-                            trigger: sectionRef.current,
-                            start: 'top 70%',
-                        }
+            // List Fade In
+            gsap.fromTo(
+                listRef.current,
+                { y: 50, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.8,
+                    delay: 0.2,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: 'top 70%',
                     }
-                );
-            });
-        }, sectionRef);
+                }
+            );
+        });
 
-        return () => ctx.revert();
-    }, []);
+        return () => mm.revert();
+    }, { scope: sectionRef });
 
     return (
         <section ref={sectionRef} id="faq" className="relative z-30 bg-background py-24 lg:py-32 px-6 lg:px-12">
@@ -97,22 +96,30 @@ export default function FAQs() {
                     {faqs.map((faq, index) => (
                         <div
                             key={index}
-                            className={`border-b border-border transition-colors duration-300 ${openIndex === index ? 'bg-secondary/30' : 'bg-transparent'}`}
+                            className={`border-b border-border transition-all duration-300 relative ${openIndex === index ? 'bg-secondary/30' : 'bg-transparent'}`}
                         >
                             <button
                                 onClick={() => toggleFAQ(index)}
-                                className="w-full flex items-center justify-between py-6 text-left group"
+                                className="w-full flex items-center justify-between py-6 text-left group relative z-10 cursor-pointer"
+                                aria-expanded={openIndex === index}
+                                aria-controls={`faq-answer-${index}`}
                             >
-                                <span className={`font-serif text-xl transition-colors duration-300 ${openIndex === index ? 'text-gold' : 'text-foreground group-hover:text-gold'}`}>
+                                <span className={`font-serif text-xl transition-colors duration-300 pr-4 ${openIndex === index ? 'text-gold' : 'text-foreground group-hover:text-gold'}`}>
                                     {faq.question}
                                 </span>
-                                <span className={`p-2 rounded-full border transition-all duration-300 ${openIndex === index ? 'border-gold text-gold rotate-180' : 'border-muted-foreground text-muted-foreground group-hover:border-gold'}`}>
+                                <span className={`p-2 rounded-full border transition-all duration-300 flex-shrink-0 ${openIndex === index ? 'border-gold text-gold rotate-180' : 'border-muted-foreground text-muted-foreground group-hover:border-gold'}`}>
                                     {openIndex === index ? <Minus size={16} /> : <Plus size={16} />}
                                 </span>
                             </button>
 
                             <div
-                                className={`overflow-hidden transition-all duration-500 ease-in-out ${openIndex === index ? 'max-h-96 opacity-100 pb-6' : 'max-h-0 opacity-0'}`}
+                                id={`faq-answer-${index}`}
+                                className={`overflow-hidden transition-all duration-500 ease-in-out`}
+                                style={{
+                                    maxHeight: openIndex === index ? '500px' : '0',
+                                    opacity: openIndex === index ? 1 : 0,
+                                    paddingBottom: openIndex === index ? '1.5rem' : '0'
+                                }}
                             >
                                 <p className="text-muted-foreground leading-relaxed pr-8">
                                     {faq.answer}

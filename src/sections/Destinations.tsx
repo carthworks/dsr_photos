@@ -79,7 +79,13 @@ export default function Destinations() {
                         ))}
                     </div>
 
-                    <button className="mt-10 group flex items-center gap-2 text-foreground font-medium hover:text-gold transition-colors">
+                    <button
+                        onClick={() => {
+                            const contact = document.getElementById('contact');
+                            contact?.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        className="mt-10 group flex items-center gap-2 text-foreground font-medium hover:text-gold transition-colors"
+                    >
                         <span className="link-underline">Inquire about a destination</span>
                         <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                     </button>

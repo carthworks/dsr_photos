@@ -157,7 +157,13 @@ export default function Philosophy() {
             </p>
 
             {/* CTA Link */}
-            <button className="group flex items-center gap-2 text-foreground font-medium hover:text-gold transition-colors">
+            <button
+              onClick={() => {
+                const contact = document.getElementById('contact');
+                contact?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="group flex items-center gap-2 text-foreground font-medium hover:text-gold transition-colors"
+            >
               <span className="link-underline">Meet the team</span>
               <ArrowRight
                 size={16}

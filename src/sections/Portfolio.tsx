@@ -34,7 +34,12 @@ const initialImages: PortfolioItem[] = [
   { src: '/images/philosophy_bride_portrait.jpg', alt: 'Bridal portrait', category: 'Wedding', type: 'image' },
   { src: '/images/journal_1.jpg', alt: 'Getting ready', category: 'Details', type: 'image' },
   { src: '/images/journal_2.jpg', alt: 'Venue setup', category: 'Details', type: 'image' },
-
+  { src: '/images/gallery_ (1).jpg', alt: 'Getting ready', category: 'Details', type: 'image' },
+  { src: '/images/gallery_ (2).webp', alt: 'Getting ready', category: 'Details', type: 'image' },
+  { src: '/images/gallery_ (3).webp', alt: 'Getting ready', category: 'Details', type: 'image' },
+  { src: '/images/gallery_ (4).webp', alt: 'Getting ready', category: 'Details', type: 'image' },
+  { src: '/images/gallery_ (5).webp', alt: 'Getting ready', category: 'Details', type: 'image' },
+  { src: '/images/gallery_ (6).webp', alt: 'Getting ready', category: 'Details', type: 'image' },
   { src: 'https://www.youtube.com/watch?v=_p_YmEtGZmc', alt: 'Loading...', category: 'Films', type: 'video' }
 ];
 
