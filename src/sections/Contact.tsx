@@ -1,11 +1,12 @@
 import { useRef, useLayoutEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Mail, MapPin, Clock, Send, Calendar, Navigation, DollarSign } from 'lucide-react';
+import { Mail, MapPin, Clock, Send, Navigation, DollarSign } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import DatePicker from '@/components/DatePicker';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +15,7 @@ export default function Contact() {
   const leftRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedDates, setSelectedDates] = useState<string[]>([]);
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -72,13 +74,22 @@ export default function Contact() {
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData.entries());
 
+    // Format selected dates for email
+    const datesText = selectedDates.length > 0
+      ? selectedDates.map(d => new Date(d + 'T00:00:00').toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      })).join(', ')
+      : 'Not specified';
+
     // Construct Mailto Body
     const subject = `Inquiry: ${data.eventType || 'New Project'} - ${data.name}`;
     const body = `
 Name: ${data.name}
 Email: ${data.email}
 Phone: ${data.phone}
-Date: ${data.date}
+Event Date(s): ${datesText}
 Location: ${data.location}
 Event Type: ${data.eventType}
 Budget Range: ${data.budget}
@@ -96,6 +107,7 @@ ${data.message}
 
     toast.success('Opening your email client to send the inquiry!');
     setIsSubmitting(false);
+    setSelectedDates([]);
     (e.target as HTMLFormElement).reset();
   };
 
@@ -219,7 +231,6 @@ ${data.message}
                   />
                 </div>
 
-                {/* Event Type */}
                 <div className="space-y-2">
                   <Label htmlFor="eventType" className="text-foreground text-xs uppercase tracking-wider">
                     Shoot Type *
@@ -228,9 +239,10 @@ ${data.message}
                     id="eventType"
                     name="eventType"
                     required
+                    defaultValue=""
                     className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <option value="" disabled selected>Select an option</option>
+                    <option value="" disabled>Select an option</option>
                     <option value="Wedding">Wedding</option>
                     <option value="Fashion Editorial">Fashion Editorial</option>
                     <option value="Portrait Session">Portrait Session</option>
@@ -244,17 +256,12 @@ ${data.message}
                 {/* Date */}
                 <div className="space-y-2">
                   <Label htmlFor="date" className="text-foreground text-xs uppercase tracking-wider">
-                    Event Date
+                    Event Date(s)
                   </Label>
-                  <div className="relative">
-                    <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      id="date"
-                      name="date"
-                      type="date"
-                      className="bg-background border-border focus:border-gold focus:ring-gold pl-10 h-11"
-                    />
-                  </div>
+                  <DatePicker
+                    selectedDates={selectedDates}
+                    onDatesChange={setSelectedDates}
+                  />
                 </div>
 
                 {/* Location */}
@@ -335,7 +342,7 @@ ${data.message}
                 ) : (
                   <>
                     <Send size={16} />
-                    Send Inquiry to Karthikeyan
+                    Check Availability
                   </>
                 )}
               </button>

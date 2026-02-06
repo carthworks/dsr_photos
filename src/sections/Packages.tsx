@@ -67,10 +67,10 @@ export default function Packages() {
 
       // Desktop animations
       mm.add("(min-width: 1024px)", () => {
-        // Heading animation
+        // Heading animation - simple fade in, no scrub
         gsap.fromTo(
           headingRef.current,
-          { y: 24, opacity: 0 },
+          { y: 30, opacity: 0 },
           {
             y: 0,
             opacity: 1,
@@ -78,14 +78,13 @@ export default function Packages() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: headingRef.current,
-              start: 'top 85%',
-              end: 'top 60%',
-              scrub: 0.4,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
             },
           }
         );
 
-        // Cards animation
+        // Cards animation - simple stagger, no scrub
         const cards = cardsRef.current?.querySelectorAll('.package-card');
         if (cards) {
           gsap.fromTo(
@@ -100,9 +99,8 @@ export default function Packages() {
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: cardsRef.current,
-                start: 'top 80%',
-                end: 'top 50%',
-                scrub: 0.4,
+                start: 'top 75%',
+                toggleActions: 'play none none none',
               },
             }
           );

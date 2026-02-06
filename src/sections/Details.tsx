@@ -64,10 +64,18 @@ export default function Details() {
   }, { scope: sectionRef });
 
   const scrollToPackages = () => {
-    const element = document.querySelector('#packages');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    requestAnimationFrame(() => {
+      const element = document.querySelector('#packages');
+      if (element) {
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
   };
 
   return (

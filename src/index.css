@@ -180,12 +180,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C9A87C;
+  background: linear-gradient(180deg, #00D4FF 0%, #C9A87C 100%);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8986C;
+  background: linear-gradient(180deg, #33DDFF 0%, #B8986C 100%);
 }
 
 /* Gold accent color */
@@ -199,6 +199,44 @@
 
 .border-gold {
   border-color: #C9A87C;
+}
+
+/* Cyan accent color (from logo) */
+.text-cyan {
+  color: #00D4FF;
+}
+
+.bg-cyan {
+  background-color: #00D4FF;
+}
+
+.border-cyan {
+  border-color: #00D4FF;
+}
+
+/* Cyan variations */
+.text-cyan-400 {
+  color: #00D4FF;
+}
+
+.text-cyan-300 {
+  color: #33DDFF;
+}
+
+.border-cyan-400 {
+  border-color: #00D4FF;
+}
+
+.hover\:text-cyan-400:hover {
+  color: #00D4FF;
+}
+
+.hover\:text-cyan-300:hover {
+  color: #33DDFF;
+}
+
+.hover\:border-cyan-400:hover {
+  border-color: #00D4FF;
 }
 
 /* Section backgrounds */
@@ -279,7 +317,8 @@
 
 .link-underline::after {
   content: '';
-  @apply absolute bottom-0 left-0 w-0 h-[1px] bg-[#C9A87C] transition-all duration-300;
+  @apply absolute bottom-0 left-0 w-0 h-[1px] transition-all duration-300;
+  background: linear-gradient(90deg, #00D4FF 0%, #C9A87C 100%);
 }
 
 .link-underline:hover::after {
@@ -288,7 +327,7 @@
 
 /* Selection color */
 ::selection {
-  background-color: #C9A87C;
+  background-color: #00D4FF;
   color: white;
 }
 

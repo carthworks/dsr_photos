@@ -4,8 +4,9 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 const navLinks = [
+  { label: 'Home', href: '#hero' },
   { label: 'Work', href: '#portfolio' },
-  { label: 'Travel', href: '#destinations' },
+  // { label: 'Travel', href: '#destinations' },
   { label: 'Process', href: '#process' },
   // { label: 'Packages', href: '#packages' },
   { label: 'Q&A', href: '#faq' },

@@ -7,7 +7,7 @@ import Navigation from './sections/Navigation';
 import Hero from './sections/Hero';
 import Philosophy from './sections/Philosophy';
 import Portfolio from './sections/Portfolio';
-import Destinations from './sections/Destinations';
+// import Destinations from './sections/Destinations';
 import Process from './sections/Process';
 import Details from './sections/Details';
 // import Packages from './sections/Packages';
@@ -106,7 +106,7 @@ function App() {
           <Hero />
           <Philosophy />
           <Portfolio />
-          <Destinations />
+          {/* <Destinations /> */}
           <Process />
           <Details />
           {/* <Packages /> */}

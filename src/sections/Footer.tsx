@@ -1,26 +1,27 @@
-import { Instagram, Facebook, Youtube, Twitter, Linkedin } from 'lucide-react';
+import { Instagram, Facebook, Youtube, AtSign } from 'lucide-react';
 
 const socialLinks = [
-  { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-  { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-  { icon: Youtube, href: 'https://youtube.com', label: 'YouTube' },
-  { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-  { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
+  { icon: Instagram, href: 'https://www.instagram.com/murali_dsr_photo_point', label: 'Instagram' },
+  { icon: Facebook, href: 'https://facebook.com/dsrphotopoint', label: 'Facebook' },
+  { icon: Youtube, href: 'https://www.youtube.com/@muralipmy', label: 'YouTube' },
+  { icon: AtSign, href: 'https://threads.net/@dsrphotopoint', label: 'Threads' },
 ];
 
-const navLinks = [
-  { label: 'Work', href: '#portfolio' },
-  { label: 'Travel', href: '#destinations' },
+const quickLinks = [
+  { label: 'Portfolio', href: '#portfolio' },
+  // { label: 'Packages', href: '#packages' },
   { label: 'Process', href: '#process' },
-  { label: 'Packages', href: '#packages' },
-  { label: 'Q&A', href: '#faq' },
-  { label: 'Journal', href: '#journal' },
+  // { label: 'Booking', href: '#booking' },
+  { label: 'FAQ', href: '#faq' },
   { label: 'Contact', href: '#contact' },
 ];
 
 export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const scrollToSection = (href: string) => {
-    if (href === '#') return;
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -28,87 +29,65 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-[100] bg-background py-16 px-6 lg:px-12 border-t border-border transition-colors duration-500">
+    <footer className="relative z-[100] bg-background py-6 px-6 lg:px-12 border-t border-border transition-colors duration-500">
       <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-          {/* Brand */}
-          <div>
-            <a
-              href="#"
-              className="flex items-center mb-6 group"
-            >
-              <img
-                src="/logo_transparent.png"
-                alt="Dsr Photos & Videos"
-                className="h-12 md:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-              />
-            </a>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              Artistic photographer transforming fashion, wedding and many more
-              shoot types into visual masterpieces. Based in Coimbatore, Tamil Nadu.
-            </p>
-          </div>
+        {/* Main Footer Content */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-4">
+          {/* Logo */}
+          <button
+            onClick={scrollToTop}
+            className="group flex-shrink-0"
+          >
+            <img
+              src="/logo_transparent.png"
+              alt="Dsr Photos & Videos"
+              className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+            />
+          </button>
 
-          {/* Navigation */}
-          <div>
-            <h4 className="text-foreground/50 text-xs uppercase tracking-[0.18em] mb-4">
-              Navigation
-            </h4>
-            <ul className="space-y-3">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <button
-                    onClick={() => scrollToSection(link.href)}
-                    className="text-muted-foreground hover:text-gold transition-colors text-sm"
-                  >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Quick Links - Horizontal */}
+          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            {quickLinks.map((link) => (
+              <button
+                key={link.href}
+                onClick={() => scrollToSection(link.href)}
+                className="text-sm text-muted-foreground hover:text-cyan-400 transition-colors"
+              >
+                {link.label}
+              </button>
+            ))}
+          </nav>
 
-          {/* Social */}
-          <div>
-            <h4 className="text-foreground/50 text-xs uppercase tracking-[0.18em] mb-4">
-              Follow Along
-            </h4>
-            <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:bg-gold hover:text-white transition-all"
-                >
-                  <social.icon size={18} />
-                </a>
-              ))}
-            </div>
+          {/* Social Links */}
+          <div className="flex gap-3 flex-shrink-0">
+            {socialLinks.map((social) => (
+              <a
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.label}
+                className="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:border-cyan-400 hover:text-cyan-400 transition-all"
+              >
+                <social.icon size={16} />
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-muted-foreground/60 text-sm">
-            © 2026 Dsr Photos & Videos. All rights reserved. Crafted by{' '}
+        {/* Copyright */}
+        <div className="text-center pt-4 border-t border-border">
+          <p className="text-muted-foreground/60 text-xs">
+            © 2026 Dsr Photos & Videos. Crafted by{' '}
             <a
               href="https://github.com/carthworks"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground hover:text-gold transition-colors font-medium underline underline-offset-4"
+              className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
             >
               carthworks
             </a>
           </p>
-          <div className="flex gap-6">
-            <button className="text-muted-foreground/60 hover:text-foreground transition-colors text-sm">
-              Privacy Policy
-            </button>
-            <button className="text-muted-foreground/60 hover:text-foreground transition-colors text-sm">
-              Terms of Service
-            </button>
-          </div>
         </div>
       </div>
     </footer>
